@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Agregamos Font Awesome -->
     <title>Dashboard</title>
     <style type="text/css">
         body {
@@ -53,7 +54,8 @@
             margin: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             width: 300px;
-            border-radius: 10px; /* Redondear las esquinas */
+            border-radius: 10px;
+            position: relative; /* Agregamos esta propiedad */
         }
 
         @media (max-width: 768px) {
@@ -62,6 +64,36 @@
                 margin: 10px;
             }
         }
+        /* Estilos para el botón de volver al inicio */
+/* Estilos para los botones en el footer */
+.buttons-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-button,
+.gnss-button {
+    display: inline-block;
+    background-color: #fff;
+    color: #333;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 0 10px; /* Espacio entre los botones */
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.back-button:hover,
+.gnss-button:hover {
+    background-color: #333;
+    color: #fff;
+}
+/* Estilos para el texto de derechos de autor */
+footer p {
+    text-align: center;
+    margin-top: 10px; /* Ajusta el margen superior según tus preferencias */
+}
     </style>
     <link rel="icon" type="image/png" href="favicon.png">
 </head>
@@ -71,22 +103,40 @@
     <h1 class="title">Data_coast</h1>
     <div class="container">
         <div class="card" id="temperatureCard">
+            <i class="fas fa-thermometer-half" style="position: absolute; top: 10px; right: 10px; font-size: 24px; color: #fff;"></i>
             <h2>Temperatura</h2>
             <p>Temperatura actual: <span id="temperature">-- °C</span></p>
         </div>
-        <div class="card" id "waveSizeCard">
+
+        <div class="card" id="waveSizeCard">
+            <i class="fas fa-water" style="position: absolute; top: 10px; right: 10px; font-size: 24px; color: #fff;"></i>
             <h2>Tamaño de Oleaje</h2>
             <p>Tamaño actual: <span id="waveSize">-- m</span></p>
         </div>
+
         <div class="card" id="pHLevelCard">
+            <i class="fas fa-flask" style="position: absolute; top: 10px; right: 10px; font-size: 24px; color: #fff;"></i>
             <h2>Nivel de pH</h2>
             <p>Nivel actual: <span id="pHLevel">--</span></p>
         </div>
+
         <div class="card" id="windSpeedCard">
+            <i class="fas fa-wind" style="position: absolute; top: 10px; right: 10px; font-size: 24px; color: #fff;"></i>
             <h2>Velocidad del Viento</h2>
             <p>Velocidad actual: <span id="windSpeed">-- km/h</span></p>
         </div>
     </div>
+    <footer>
+        <div class="buttons-container">
+            <a class="back-button" href="index.html">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+            <a class="gnss-button" href="gps_gnss.html">
+                <i class="fas fa-globe"></i> GNSS/GPS
+            </a>
+        </div>
+        <p>&copy; Mecatrónicos RD <span id="currentYear"></span></p>
+    </footer>
 </body>
 
 <script type="text/javascript">
@@ -153,5 +203,10 @@
             document.getElementById("windSpeed").textContent = data + " km/h";
         }
     }
+    var currentYearElement = document.getElementById("currentYear");
+    if (currentYearElement) {
+        currentYearElement.textContent = new Date().getFullYear();
+    }
+    
 </script>
 </html>
