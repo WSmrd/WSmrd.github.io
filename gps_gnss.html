@@ -56,6 +56,39 @@
                 margin: 10px;
             }
         }
+        /* Estilos para el botón de volver al inicio */
+/* Estilos para los botones en el footer */
+.buttons-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-button,
+.gnss-button {
+    display: inline-block;
+    background-color: #fff;
+    color: #333;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 0 10px; /* Espacio entre los botones */
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.back-button:hover,
+.gnss-button:hover {
+    background-color: #333;
+    color: #fff;
+}
+/* Estilos para el texto de derechos de autor */
+footer p {
+    text-align: center;
+    margin-top: 10px; /* Ajusta el margen superior según tus preferencias */
+}
+.fas {
+    display: inline; /* Asegura que los iconos sean elementos en línea */
+}
     </style>
     <link rel="icon" type="image/png" href="favicon.png">
 </head>
@@ -64,6 +97,17 @@
     <video src="ocean5.mp4" autoplay muted loop></video>
     <h1>GPS_GNSS</h1>
     <div id="map"></div>
+    <footer>
+        <div class="buttons-container">
+            <a class="back-button" href="index.html">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+            <a class="gnss-button" href="data_coast.html">
+                <i class="fas fa-database"></i> Data_coast
+            </a>
+        </div>
+        <p>&copy; Mecatrónicos RD <span id="currentYear"></span></p>
+    </footer>
 </body>
 
 <script type="text/javascript">
@@ -145,6 +189,11 @@
             marker.setLatLng([latitude, longitude]);
             map.setView([latitude, longitude], map.getZoom());
         }
+
+    }
+    var currentYearElement = document.getElementById("currentYear");
+    if (currentYearElement) {
+        currentYearElement.textContent = new Date().getFullYear();
     }
 </script>
 </html>
