@@ -201,16 +201,16 @@ footer p {
         console.log(message.destinationName + " : " + message.payloadString);
         var topic = message.destinationName;
         var data = message.payloadString;
-        if (topic === "temperature") {
+        if (topic === "temperaturejo") {
             document.getElementById("temperature").textContent = data + " °C";
-        } else if (topic === "waveSize") {
+        } else if (topic === "waveSizejo") {
             document.getElementById("waveSize").textContent = data + " m";
-        } else if (topic === "pHLevel") {
+        } else if (topic === "pHLeveljo") {
             document.getElementById("pHLevel").textContent = data;
-        } else if (topic === "windSpeed") {
+        } else if (topic === "windSpeedjo") {
             document.getElementById("windSpeed").textContent = data + " km/h";
         }
-         else if (topic === "turbidity") {
+         else if (topic === "turbidityjo") {
             document.getElementById("turbidity").textContent = data + " %";
         }
         
