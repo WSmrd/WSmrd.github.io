@@ -196,25 +196,28 @@ footer p {
         }
     }
 
-    // Callback para procesar el mensaje entrante
-    function MessageArrived(message) {
-        console.log(message.destinationName + " : " + message.payloadString);
-        var topic = message.destinationName;
-        var data = message.payloadString;
-        if (topic === "temperaturejo") {
-            document.getElementById("temperature").textContent = data + " °C";
-        } else if (topic === "waveSizejo") {
-            document.getElementById("waveSize").textContent = data + " m";
-        } else if (topic === "pHLeveljo") {
-            document.getElementById("pHLevel").textContent = data;
-        } else if (topic === "windSpeedjo") {
-            document.getElementById("windSpeed").textContent = data + " km/h";
-        }
-         else if (topic === "turbidityjo") {
-            document.getElementById("turbidity").textContent = data + " %";
-        }
-        
+       // aqui proceso lso mensajes qu eentran mqtt
+function MessageArrived(message) {
+    console.log(message.destinationName + " : " + message.payloadString);
+    var topic = message.destinationName;
+    var data = parseFloat(message.payloadString); //convierto mis valores a numeros
+
+    if (topic === "temperaturejo") {
+        document.getElementById("temperature").textContent = data + " °C";
+    } else if (topic === "waveSizejo") {
+        document.getElementById("waveSize").textContent = data + " m";
+    } else if (topic === "pHLeveljo") {
+        document.getElementById("pHLevel").textContent = data;
+    } else if (topic === "windSpeedjo") {
+        document.getElementById("windSpeed").textContent = data + " km/h";
+    } else if (topic === "turbidityjo") {
+        //aqui convierto lo que manda el micro en porcentaje
+        var percentage = ((4095 - data) / 4095) * 100;
+       //aqui limito el valor a 2 decimales
+        percentage = percentage.toFixed(2);
+        document.getElementById("turbidity").textContent = percentage + " %";
     }
+}
     var currentYearElement = document.getElementById("currentYear");
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
