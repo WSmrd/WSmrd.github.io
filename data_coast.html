@@ -202,8 +202,13 @@ function MessageArrived(message) {
     var topic = message.destinationName;
     var data = parseFloat(message.payloadString); //convierto mis valores a numeros
 
-    if (topic === "temperaturejo") {
-        document.getElementById("temperature").textContent = data + " °C";
+   if (topic === "temperaturejo") {
+        // aqui realizo el calculo de temperatura aquí en la página web.
+        var voltage = (data / 4095) * 5000; //  aqui convierto el valor del ADC a milivoltios 5V
+        var temperature = voltage / 10; //  LM35 tiene un factor de escala de 10 mV/°C
+
+        // Actualizo el contenido en la página web
+        document.getElementById("temperature").textContent = temperature.toFixed(2) + " °C";
     } else if (topic === "waveSizejo") {
         document.getElementById("waveSize").textContent = data + " m";
     } else if (topic === "pHLeveljo") {
