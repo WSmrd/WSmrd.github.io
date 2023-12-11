@@ -12,10 +12,10 @@
     <style type="text/css">
         body {
             font-family: Arial, sans-serif;
-            background-color: transparent; /* Fondo transparente para que el video sea visible */
+            background-color: transparent; /* fondo transparente para que el video sea visible */
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Para evitar barras de desplazamiento en el video */
+            overflow: hidden; /* para evitar barras de desplazamiento en el video */
             position: relative;
         }
 
@@ -26,27 +26,27 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -1; /* Coloca el video detrás de otros elementos */
+            z-index: -1; /* coloca el video detrás de otros elementos */
         }
 
         h1 {
-            background-color: rgba(51, 51, 51, 0.5); /* Fondo semitransparente para el título */
+            background-color: rgba(51, 51, 51, 0.5); /* fondo semitransparente para el título */
             color: #fff;
             text-align: center;
             padding: 10px;
             position: relative;
-            z-index: 1; /* Coloca el título encima del video */
+            z-index: 1; 
         }
 
         #map {
             height: 400px;
             margin: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            z-index: 1; /* Coloca el mapa encima del video */
+            z-index: 1; /* ponemos el mapa encima del video */
         }
 
         @media (max-width: 768px) {
-            /* Estilos para tablets y teléfonos */
+            /* estilos para dispositivos moviles  */
             h1 {
                 font-size: 24px;
             }
@@ -71,7 +71,7 @@
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
-    margin: 0 10px; /* Espacio entre los botones */
+    margin: 0 10px; /* espacio entre los botones */
     font-weight: bold;
     transition: background-color 0.3s, color 0.3s;
 }
@@ -81,13 +81,13 @@
     background-color: #333;
     color: #fff;
 }
-/* Estilos para el texto de derechos de autor */
+/* estilos para el footer derecho aurtor */
 footer p {
     text-align: center;
-    margin-top: 10px; /* Ajusta el margen superior según tus preferencias */
+    margin-top: 10px; /*aqui ajustamos el margen superior */
 }
 .fas {
-    display: inline; /* Asegura que los iconos sean elementos en línea */
+    display: inline; /* aseguramso de que los elementos sean en forma lineal */
 }
     </style>
     <link rel="icon" type="image/png" href="favicon.png">
@@ -113,11 +113,11 @@ footer p {
 <script type="text/javascript">
     var map, marker;
 
-    // Coordenadas predeterminadas para la República Dominicana
+    //coordenadas default
     var defaultLat = 18.491137645473408;
     var defaultLng =  -69.97785173719332;
 
-    // Conexión MQTT
+    // variables de conexion a mqtt
     var hostname = "mqtt-dashboard.com";
     var port = 8884;
     var clientId = "clientId-kIvSC5zoI4";
@@ -131,7 +131,7 @@ footer p {
     mqttClient.onConnectionLost = ConnectionLost;
     Connect();
 
-    // Inicia una conexión con el servidor MQTT
+    // iniciamos la comunicacion al servidor mqtt
     function Connect() {
         mqttClient.connect({
             onSuccess: Connected,
@@ -143,18 +143,18 @@ footer p {
         });
     }
 
-    // Callback para la conexión exitosa
+    // callback para la conexión exitosa
     function Connected() {
         console.log("Connected");
         mqttClient.subscribe(subscription);
     }
 
-    // Callback para la conexión fallida
+    // callback para la conexión fallida
     function ConnectionFailed(res) {
         console.log("Connect failed: " + res.errorMessage);
     }
 
-    // Callback para la pérdida de conexión
+    // callback para la pérdida de conexión
     function ConnectionLost(res) {
         if (res.errorCode != 0) {
             console.log("Connection lost: " + res.errorMessage);
@@ -162,35 +162,47 @@ footer p {
         }
     }
 
-    // Callback para procesar el mensaje entrante
+    // aqui se procesa el mensaje entrante
     function MessageArrived(message) {
         console.log(message.destinationName + " : " + message.payloadString);
         var locationData = message.payloadString;
-        UpdateMap(locationData);
+        ProcessLocationData(locationData);
     }
+   // aqui se  procesar la trama y actualizar el mapa
+function ProcessLocationData(locationData) {
+    const regex = /\+CGNSSINFO: \d+,\d+,,\d+,\d+,(.*),([NS]),(.*),([EW]),/;
+    const matches = locationData.match(regex);
 
-    // Función para actualizar el mapa con la ubicación de longitud y latitud
-    function UpdateMap(locationData) {
-        var coordinates = locationData.split(',');
-        var latitude = parseFloat(coordinates[0]);
-        var longitude = parseFloat(coordinates[1]);
+    if (matches) {
+        // aqui extraigo los valores  para multiplicarlos por -1 
+        const latitudNumerica = parseFloat(matches[1]) * (matches[2] === 'S' ? -1 : 1);
+        const longitudNumerica = parseFloat(matches[3]) * (matches[4] === 'W' ? -1 : 1);
 
-        if (!map) {
-            // Crea el mapa si aún no existe
-            map = L.map('map').setView([latitude, longitude], 8);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-            marker = L.marker([latitude, longitude]).addTo(map)
-                .bindPopup('Bolla1')
-                .openPopup();
-        } else {
-            marker.setLatLng([latitude, longitude]);
-            map.setView([latitude, longitude], map.getZoom());
-        }
-
+        // aqui actualizamos el mapa con las coordenadas ya procesadas
+        UpdateMap(latitudNumerica, longitudNumerica);
+    } else {
+        console.log("No se encontraron coincidencias en la trama.");
     }
+}
+
+    // aqui actualizo el mapa con la ubicación de longitud y latitud
+    
+function UpdateMap(latitude, longitude) {
+    if (!map) {
+        //creo mi mapa si no exixte
+        map = L.map('map').setView([latitude, longitude], 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        marker = L.marker([latitude, longitude]).addTo(map)
+            .bindPopup('Bolla1')
+            .openPopup();
+    } else {
+        marker.setLatLng([latitude, longitude]);
+        map.setView([latitude, longitude], map.getZoom());
+    }
+}
     var currentYearElement = document.getElementById("currentYear");
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
