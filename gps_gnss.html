@@ -188,21 +188,37 @@ function ProcessLocationData(locationData) {
     // aqui actualizo el mapa con la ubicación de longitud y latitud
     
 function UpdateMap(latitude, longitude) {
-    if (!map) {
-        //creo mi mapa si no exixte
-        map = L.map('map').setView([latitude, longitude], 8);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        marker = L.marker([latitude, longitude]).addTo(map)
-            .bindPopup('Bolla1')
-            .openPopup();
-    } else {
-        marker.setLatLng([latitude, longitude]);
-        map.setView([latitude, longitude], map.getZoom());
+        if (!map) {
+            // Si el mapa aún no existe
+            map = L.map('map').setView([latitude, longitude], 8);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+    
+            // aqui creo un contenedor HTML con la imagen y el texto
+            var container = document.createElement('div');
+    
+            // creamos un elemento html con la imagen
+            var imgElement = document.createElement('img');
+            imgElement.src = 'buoy.png';
+            imgElement.style.width = '80px'; //  ancho 
+            imgElement.style.height = '90px'; // altura 
+            container.appendChild(imgElement);
+    
+            //  creamos un elemento html con tesxto
+            var textElement = document.createElement('p');
+            textElement.textContent = 'Wave T-01';
+            container.appendChild(textElement);
+    
+            marker = L.marker([latitude, longitude]).addTo(map)
+                .bindPopup(container)
+                .openPopup();
+        } else {
+            marker.setLatLng([latitude, longitude]);
+            map.setView([latitude, longitude], map.getZoom());
+        }
     }
-}
     var currentYearElement = document.getElementById("currentYear");
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
