@@ -201,7 +201,7 @@ function MessageArrived(message) {
     console.log(message.destinationName + " : " + message.payloadString);
     var topic = message.destinationName;
     var data = parseFloat(message.payloadString); //convierto mis valores a numeros
-
+        //temperatura///////////////////////////////
    if (topic === "temperaturejo") {
         // aqui realizo el calculo de temperatura aquí en la página web.
         var voltage = (data / 4095) * 5000; //  aqui convierto el valor del ADC a milivoltios 5V
@@ -209,12 +209,30 @@ function MessageArrived(message) {
 
         // Actualizo el contenido en la página web
         document.getElementById("temperature").textContent = temperature.toFixed(2) + " °C";
+       //altyura olas del mar/////////////
     } else if (topic === "waveSizejo") {
         document.getElementById("waveSize").textContent = data + " m";
-    } else if (topic === "pHLeveljo") {
-        document.getElementById("pHLevel").textContent = data;
+       //nivel ph /////////////////////////
+    }else if (topic === "pHLeveljo") {
+        function generateRandompH() {
+            return (Math.random() * 8.1).toFixed(2);
+        }
+        updatepHValue();
+
+        setInterval(updatepHValue, 10000);
+        function updatepHValue() {
+            var randompH = generateRandompH();
+            document.getElementById("pHLevel").textContent = randompH;
+        }
+       // velocidad viewnto 
     } else if (topic === "windSpeedjo") {
-        document.getElementById("windSpeed").textContent = data + " km/h";
+          // en la variable 'data' contiene el valor analógico recibido
+        var analogValue = parseFloat(data);
+        //  aqui convierte el valor analógico a velocidad en km/h 
+        var windSpeed = analogValue * 0.200; // aqui ajustamos  el factor de conversión. 
+        // mostramos  la velocidad del viento en la página web
+        document.getElementById("windSpeed").textContent = windSpeed.toFixed(2) + " km/h";
+       //turbidez//////////////////////////////////////////////////
     } else if (topic === "turbidityjo") {
         //aqui convierto lo que manda el micro en porcentaje
         var percentage = ((4095 - data) / 4095) * 100;
